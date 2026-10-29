@@ -9,6 +9,7 @@
 | Conventional Commits | Padrão de mensagem de commit com prefixo de tipo (`feat:`, `fix:`) |
 | Definição de pronto | Critérios que uma tarefa cumpre para ser considerada terminada |
 | Deploy | Publicar uma versão do código num ambiente |
+| Draft PR | Pull request em rascunho: a CI roda, mas não pode ser mergeado nem pede review |
 | Docs-as-code | Documentação versionada no repositório e revisada como código |
 | DORA | Pesquisa que definiu quatro métricas de desempenho de entrega |
 | DR drill | Ensaio de recuperação de desastre: restaurar o backup de verdade, num ambiente separado |
@@ -29,5 +30,6 @@
 | Secret scanning | Recurso do GitHub que detecta chaves e senhas em commits |
 | SEV | Nível de severidade de um incidente (SEV1 é o mais grave) |
 | SOC 2 | Auditoria de controles de segurança, comum em SaaS vendido a empresas |
+| Squash and merge | Merge que junta todos os commits de um PR num só commit na `main` |
 | Staging | Ambiente igual à produção, com dados fictícios, para validar antes de publicar |
 | Estimativa (story points) | Medida relativa de tamanho e incerteza de uma tarefa |

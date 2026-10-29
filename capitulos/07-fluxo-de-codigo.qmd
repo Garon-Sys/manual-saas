@@ -104,6 +104,8 @@ Uma tarefa só vai para "Feito" quando:
 - a documentação foi atualizada, quando há algo a documentar;
 - a issue foi fechada pelo PR.
 
+O capítulo [-@sec-vscode] mostra este mesmo fluxo, passo a passo, dentro do VS Code.
+
 ::: {.callout-tip title="Neste repositório"}
 O [template de PR](https://github.com/Garon-Sys/manual-saas/blob/main/.github/pull_request_template.md) deste livro é uma versão adaptada do template acima. Veja os [PRs fechados](https://github.com/Garon-Sys/manual-saas/pulls?q=is%3Apr+is%3Aclosed) para exemplos reais de descrição e review.
 :::

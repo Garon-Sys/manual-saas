@@ -11,7 +11,7 @@ O diferencial é que **este repositório é o próprio exemplo**: ele usa tudo o
 | Parte | Assunto |
 | --- | --- |
 | I — Gestão | Método, onde cada coisa mora, GitHub Projects, ágil com iterações, documentação, pessoas |
-| II — Entrega | Fluxo de código e PRs, CI/CD e ambientes, migrações seguras e feature flags |
+| II — Entrega | Fluxo de código e PRs, o fluxo no VS Code, CI/CD e ambientes, migrações seguras e feature flags |
 | III — Operação | Observabilidade, backups, incidentes e postmortems, segurança |
 | Apêndices | Templates prontos, plano de implantação, trilha de estudo, glossário |
 

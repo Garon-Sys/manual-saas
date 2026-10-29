@@ -1,0 +1,164 @@
+# O fluxo no VS Code {#sec-vscode}
+
+Quase todo o fluxo do capítulo [-@sec-fluxo] pode ser feito sem sair do VS Code: pegar a issue, criar o branch, codificar, abrir o PR, acompanhar a CI, revisar e fazer o merge. Só o planejamento no quadro do Projects e as configurações do repositório ficam melhores no navegador.
+
+## Quem faz o quê
+
+```{mermaid}
+flowchart TB
+    subgraph nav["Navegador: planejar"]
+        direction LR
+        Q["Prioriza no quadro<br/>do Projects"] --> IT["Puxa a issue<br/>para a iteração"]
+    end
+    subgraph vs["VS Code: executar"]
+        direction LR
+        ST["Start Working<br/>on Issue"] --> CO["Codifica<br/>e faz commits"] --> PU["Push e<br/>PR em Draft"] --> RV["Ready for review<br/>e merge"]
+    end
+    subgraph gh["GitHub: automático"]
+        direction LR
+        CI["CI roda<br/>a cada push"] --> FE["Issue fecha<br/>e cartão vai a Feito"] --> DP["Deploy<br/>pela main"]
+    end
+    nav --> vs
+    vs --> gh
+    style nav fill:transparent,stroke:#adb5bd
+    style vs fill:transparent,stroke:#adb5bd
+    style gh fill:transparent,stroke:#adb5bd
+```
+
+Você planeja no navegador e executa no editor. Como a issue, o branch e o PR ficam ligados entre si, os cartões do quadro andam sozinhos enquanto você trabalha.
+
+## Preparação
+
+### As extensões
+
+Instale três extensões, todas na aba **Extensions** (Ctrl/Cmd + Shift + X):
+
+| Extensão | Para quê |
+| --- | --- |
+| **GitHub Pull Requests** (do GitHub) | Issues, PRs, revisão e merge dentro do editor |
+| **GitHub Actions** (do GitHub) | Ver as execuções da CI e os logs |
+| **Quarto** | Preview do livro (só para este repositório) |
+
+O controle do Git (commits, branches, push) já vem embutido no VS Code, no painel **Source Control**.
+
+Depois de instalar, a extensão de PRs pede para entrar na sua conta do GitHub. Aceite: é ela que dá ao editor acesso às issues e aos PRs.
+
+### Ajustes recomendados
+
+Abra as configurações em JSON (paleta de comandos, Ctrl/Cmd + Shift + P, **Preferences: Open User Settings (JSON)**) e acrescente:
+
+```json
+{
+  "githubIssues.issueBranchTitle": "${issueNumber}-${sanitizedLowercaseIssueTitle}",
+  "githubPullRequests.defaultMergeMethod": "squash",
+  "git.autofetch": true,
+  "git.pruneOnFetch": true
+}
+```
+
+- **`issueBranchTitle`:** o branch criado a partir de uma issue segue o padrão do livro, como `12-exportar-relatorio-em-pdf`.
+- **`defaultMergeMethod`:** o merge usa squash por padrão (explicado abaixo).
+- **`autofetch` e `pruneOnFetch`:** o editor busca novidades do GitHub sozinho e esquece branches remotos que já foram apagados.
+
+## Os painéis que você vai usar
+
+| Painel | Onde fica | O que mostra |
+| --- | --- | --- |
+| **Source Control** | Barra lateral, ícone de ramificação | Arquivos alterados, diff, caixa de commit, botão de sync |
+| **GitHub** | Barra lateral, ícone do GitHub | Seções *Issues* e *Pull Requests* |
+| **GitHub Actions** | Barra lateral, ícone de foguete | Execuções dos workflows e seus logs |
+| **Barra de status** | Canto inferior esquerdo | O branch atual; clique para trocar ou criar um |
+
+## Uma tarefa do começo ao fim
+
+### 1. Pegar a issue
+
+No painel **GitHub**, seção **Issues**, aparecem as issues atribuídas a você. Passe o mouse sobre a issue e clique em **Start Working on Issue** (ícone de seta).
+
+O VS Code atualiza a `main`, cria o branch `12-exportar-relatorio-em-pdf` a partir dela e já entra nele. A barra de status mostra o branch novo.
+
+### 2. Codificar e fazer commits
+
+Trabalhe normalmente. No painel **Source Control**:
+
+- clique num arquivo para ver o **diff** lado a lado;
+- use o **+** para escolher o que entra no commit (*stage*);
+- escreva a mensagem no padrão Conventional Commits (`feat(api): exporta relatório em PDF`);
+- confirme com **Ctrl/Cmd + Enter**.
+
+Prefira commits pequenos, cada um com uma ideia. Fica mais fácil revisar e, se for preciso, desfazer.
+
+### 3. Push e PR em Draft
+
+No primeiro push, o Source Control mostra o botão **Publish Branch**. Depois disso, o botão vira **Sync Changes**.
+
+Para abrir o PR, vá ao painel **GitHub**, seção **Pull Requests**, e clique em **Create Pull Request** (ícone de +). Confira:
+
+- **base:** `main`; **compare:** o seu branch;
+- **título:** no padrão Conventional Commits, porque ele vira a mensagem do commit no squash;
+- **descrição:** o template do repositório já aparece preenchido; escreva `Closes #12`.
+
+No botão de criar, abra a seta ao lado e escolha **Create Draft**.
+
+### 4. Acompanhar a CI
+
+A cada push, a CI roda. Você acompanha de dois jeitos:
+
+- na página do PR, dentro do VS Code, na seção de checks;
+- no painel **GitHub Actions**, que lista as execuções e abre o log de cada etapa.
+
+Se algo falhar, abra o log, corrija, faça commit e push. A CI roda de novo sozinha.
+
+### 5. Revisar e fazer o merge
+
+Quando terminar:
+
+1. Na página do PR, clique em **Ready for review**.
+2. Revise o diff na seção **Files changed**: clicar num arquivo abre a comparação, e dá para comentar numa linha específica. Mesmo sozinho, leia o PR inteiro uma vez; é quando se pegam os esquecimentos.
+3. Com a CI verde e o review feito, clique em **Squash and Merge**.
+
+Com `Closes #12` na descrição, a issue fecha sozinha e o cartão vai para "Feito" no quadro.
+
+### 6. Limpar
+
+Depois do merge, a página do PR oferece **Delete Branch**. Aceite: o VS Code apaga o branch no GitHub e no seu computador, volta para a `main` e a atualiza.
+
+## Qual tipo de merge
+
+O GitHub oferece três formas de merge. Para um time pequeno, o **squash** é a escolha mais simples:
+
+| Tipo | O que acontece na `main` | Quando usar |
+| --- | --- | --- |
+| **Squash and merge** | Todos os commits do PR viram um só, com o título do PR | Padrão recomendado: uma linha por mudança no histórico |
+| Create a merge commit | Entram todos os commits, mais um commit de merge | Quando cada commit do PR precisa ficar visível |
+| Rebase and merge | Entram todos os commits, sem commit de merge | Times acostumados a manter cada commit limpo |
+
+Com squash, os commits intermediários ("ajuste", "corrige teste") ficam no PR e não poluem a `main`. O histórico vira uma lista legível de mudanças, e cada linha aponta para o PR que explica o porquê. Dá para deixar só o squash habilitado em **Settings → General → Pull Requests**.
+
+## O mesmo fluxo pelo terminal
+
+O VS Code faz por baixo o que estes comandos fazem. Vale conhecê-los: são mais rápidos para quem se acostuma e funcionam em qualquer editor.
+
+| Etapa | VS Code | Terminal (`git` e `gh`) |
+| --- | --- | --- |
+| Pegar a issue | Start Working on Issue | `gh issue develop 12 --checkout` |
+| Commit | Source Control, Ctrl/Cmd + Enter | `git add -p` e `git commit -m "feat: ..."` |
+| Push | Publish Branch / Sync Changes | `git push -u origin HEAD` |
+| PR em Draft | Create Pull Request → Create Draft | `gh pr create --draft --fill` |
+| Ver a CI | Painel GitHub Actions | `gh pr checks --watch` |
+| Pronto para revisão | Ready for review | `gh pr ready` |
+| Merge e limpeza | Squash and Merge, Delete Branch | `gh pr merge --squash --delete-branch` |
+
+## Quando ir ao navegador
+
+- **Planejar:** o quadro do Projects, com Board, Roadmap, iterações e campos personalizados ([-@sec-projects], [-@sec-agil]).
+- **Configurar o repositório:** branch protection, Pages, permissões, segredos do Actions.
+- **Discussões:** as Discussions do repositório.
+
+::: {.callout-tip title="Neste repositório"}
+O arquivo [`.vscode/extensions.json`](https://github.com/Garon-Sys/manual-saas/blob/main/.vscode/extensions.json) faz o VS Code sugerir as extensões deste capítulo para quem abrir o repositório pela primeira vez. Copie a ideia para o seu projeto.
+:::
+
+::: {.callout-note title="Para praticar"}
+Encontre um erro de digitação ou um trecho confuso neste livro e corrija-o pelo fluxo completo, sem sair do VS Code: issue, Start Working on Issue, commit, PR em Draft, CI, Ready for review, squash, Delete Branch.
+:::

@@ -27,6 +27,7 @@ book:
     - part: "Parte II — Entrega"
       chapters:
         - capitulos/07-fluxo-de-codigo.qmd
+        - capitulos/07b-vscode.qmd
         - capitulos/08-ci-cd.qmd
         - capitulos/09-migracoes-e-flags.qmd
     - part: "Parte III — Operação"
