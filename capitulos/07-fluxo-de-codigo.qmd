@@ -1,0 +1,113 @@
+# Fluxo de código e pull requests {#sec-fluxo}
+
+Toda mudança entra por pull request numa `main` que está sempre pronta para produção, inclusive quando só uma pessoa programa. É o hábito que torna indolor a entrada de um colaborador.
+
+## O ciclo de uma tarefa
+
+```{mermaid}
+flowchart TB
+    subgraph pr["No pull request"]
+        direction LR
+        I["Issue no Backlog"] --> B["Branch da issue"] --> P["Pull request"] --> CI{"CI verde?"}
+        CI -- não --> F["Corrige e faz push"] --> P
+    end
+    subgraph entrega["Depois que a CI passa"]
+        direction LR
+        R["Review"] --> M["Merge na main"] --> D["Deploy:<br/>staging, depois produção"] --> X["Issue fechada"]
+    end
+    pr -- "sim" --> entrega
+    style pr fill:transparent,stroke:#adb5bd
+    style entrega fill:transparent,stroke:#adb5bd
+```
+
+## GitHub Flow em cinco regras
+
+1. A `main` está sempre implantável.
+2. Cada tarefa ganha uma branch curta, nomeada pela issue: `123-exportar-pdf`.
+3. A branch vive dias, não semanas. Mudança grande é quebrada em PRs menores.
+4. O PR só entra com a CI verde e, havendo colaborador, com um review.
+5. Depois do merge, a branch é apagada e o deploy acontece.
+
+Existem fluxos mais elaborados, como o Git Flow, com branches de `develop` e `release`. Eles fazem sentido para software instalado pelo cliente, com várias versões em paralelo. Num SaaS, só existe uma versão em produção, e o GitHub Flow basta.
+
+## Branch protection
+
+Em **Settings → Branches** (ou **Rules**), proteja a `main`:
+
+- exigir pull request para qualquer mudança;
+- exigir que a CI passe;
+- bloquear push direto e force push;
+- com colaborador, exigir uma aprovação.
+
+Mesmo sozinho, ative. É o que impede o "só um ajustezinho direto na `main`" às onze da noite.
+
+## O template de PR
+
+Um arquivo `.github/pull_request_template.md` preenche automaticamente a descrição de todo PR:
+
+```markdown
+## O que muda
+
+Closes #
+
+## Como testar
+
+1.
+
+## Checklist
+
+- [ ] Testes passando
+- [ ] Migração revisada (compatível com a versão anterior)
+- [ ] Sem dados reais ou segredos no diff
+- [ ] Docs, ADR ou runbook atualizados, se preciso
+
+## Risco
+
+Baixo / Médio / Alto, e por quê:
+```
+
+## O que procurar num review
+
+Num time pequeno, o review não é auditoria; é a segunda opinião que pega o que o autor não viu. Em ordem de importância:
+
+1. **Corretude:** faz o que a issue pede? Os casos de borda estão cobertos?
+2. **Segurança e dados:** algum segredo, dado real ou consulta sem filtro de permissão?
+3. **Migração:** é compatível com a versão anterior do código (capítulo [-@sec-migracoes])?
+4. **Clareza:** outra pessoa entende isso daqui a seis meses?
+5. **Estilo:** só o que o linter não pega. O resto, o linter resolve.
+
+## Mensagens de commit: Conventional Commits
+
+O prefixo diz o tipo da mudança e permite gerar o changelog automaticamente.
+
+| Prefixo | Uso | Exemplo no Farol |
+| --- | --- | --- |
+| `feat:` | Funcionalidade nova | `feat(api): importa transações do agregador` |
+| `fix:` | Correção de bug | `fix(web): corrige total por espaço` |
+| `docs:` | Só documentação | `docs: adiciona ADR 0013` |
+| `refactor:` | Muda código sem mudar comportamento | `refactor(api): extrai serviço de membros` |
+| `test:` | Só testes | `test(api): cobre convite expirado` |
+| `chore:` | Manutenção, dependências | `chore: atualiza Django` |
+| `ops:` | Infra, deploy, monitoramento | `ops: alerta de taxa de erro` |
+
+## Changelog
+
+Um `CHANGELOG.md` com o que mudou em cada versão, **em linguagem de usuário**. "Agora dá para exportar o relatório anual em PDF", e não "adiciona endpoint `/reports/annual/pdf`". Ele alimenta as notas de versão para testadores e o blog do produto.
+
+## Definição de pronto
+
+Uma tarefa só vai para "Feito" quando:
+
+- o código está mergeado na `main` e em produção;
+- os testes cobrem o comportamento novo;
+- a migração foi revisada;
+- a documentação foi atualizada, quando há algo a documentar;
+- a issue foi fechada pelo PR.
+
+::: {.callout-tip title="Neste repositório"}
+O [template de PR](https://github.com/Garon-Sys/manual-saas/blob/main/.github/pull_request_template.md) deste livro é uma versão adaptada do template acima. Veja os [PRs fechados](https://github.com/Garon-Sys/manual-saas/pulls?q=is%3Apr+is%3Aclosed) para exemplos reais de descrição e review.
+:::
+
+::: {.callout-note title="Para praticar"}
+Ative a branch protection na `main` do seu projeto hoje. Depois, faça uma mudança de uma linha pelo fluxo completo: issue, branch, PR, CI, merge.
+:::

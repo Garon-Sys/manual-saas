@@ -1,0 +1,102 @@
+# Issues e GitHub Projects {#sec-projects}
+
+O backlog sai do `TODO.md` e vai para um quadro no GitHub Projects, onde cada tarefa tem dono, status, histórico e o PR que a resolveu.
+
+Um `TODO.md` funciona enquanto você está sozinho. Com duas pessoas, ele não mostra quem faz o quê, não permite discussão por item e gera conflito de merge quando os dois o editam ao mesmo tempo.
+
+## Os tipos de item
+
+- **Issue:** uma tarefa real, com descrição, discussão e vínculo com PRs. É a unidade de trabalho.
+- **Rascunho (draft item):** uma ideia anotada direto no quadro, sem virar issue. Serve para capturar rápido; converta em issue quando for trabalhar nela.
+- **Pull request:** aparece no quadro e anda sozinho conforme é revisado e mergeado.
+
+## O ciclo de vida de um item
+
+```{mermaid}
+stateDiagram-v2
+    direction TB
+    [*] --> Backlog: item criado
+    Backlog --> Próximo: entrou no planejamento
+    Próximo --> EmAndamento: alguém pegou
+    EmAndamento --> EmRevisão: PR aberto
+    EmRevisão --> EmAndamento: pedido de mudança
+    EmRevisão --> Feito: PR mergeado
+    Feito --> [*]
+    EmAndamento: Em andamento
+    EmRevisão: Em revisão
+```
+
+Três transições podem ser automáticas: item criado, PR aberto e PR mergeado. As outras são decisões de pessoas.
+
+## As três visões
+
+O Projects mostra os mesmos itens de três formas:
+
+| View | Para que serve | Quando usar |
+| --- | --- | --- |
+| Board (Kanban) | Ver o fluxo e arrastar cartões | Dia a dia |
+| Table | Ordenar, filtrar, editar campos em massa | Triagem e planejamento |
+| Roadmap | Itens numa linha do tempo | Conversas de prazo |
+
+## Configuração recomendada
+
+**Campos:**
+
+- **Status:** Backlog, Próximo, Em andamento, Em revisão, Feito.
+- **Prioridade:** P0 a P3 (tabela abaixo).
+- **Área:** no Farol, `api`, `web`, `admin`, `ops`, `docs`.
+- **Estimativa:** 1, 2, 3, 5, 8 (capítulo [-@sec-agil]).
+- **Iteração:** ciclos de duas semanas (capítulo [-@sec-agil]).
+
+**Labels no repositório:** `bug`, `feature`, `ops`, `security`, `debt`, `docs`, `good first issue`.
+
+**Automações nativas** (menu Workflows do projeto):
+
+- Item adicionado ao projeto → Status = Backlog.
+- PR aberto → Status = Em revisão.
+- Issue ou PR fechado → Status = Feito.
+
+## Prioridades em linguagem comum
+
+| Prioridade | Significa | Exemplo no Farol |
+| --- | --- | --- |
+| P0 | Produção quebrada ou dado em risco: larga tudo | Usuários não conseguem entrar |
+| P1 | Bloqueia o objetivo da iteração | A importação do agregador está falhando |
+| P2 | Importante, entra nas próximas iterações | Novo relatório anual |
+| P3 | Seria bom ter | Ajuste visual no gráfico |
+
+## O que faz uma boa issue
+
+Uma issue boa responde três perguntas:
+
+1. **Qual é o problema** ou a necessidade?
+2. **Qual é o resultado esperado?**
+3. **Como saber que terminou?** (critérios de aceite)
+
+```markdown
+## Problema
+O usuário não consegue exportar o relatório anual em PDF.
+
+## Resultado esperado
+Um botão "Exportar PDF" na tela do relatório anual.
+
+## Critérios de aceite
+- [ ] O PDF tem as mesmas linhas da tela
+- [ ] Valores em reais e em dólares aparecem formatados
+- [ ] Funciona para um usuário com mais de um espaço
+```
+
+## Hábitos que fazem o quadro funcionar
+
+- **Toda mudança de código nasce de uma issue**, e o PR diz `Closes #123`. Assim a issue fecha sozinha no merge.
+- **Ninguém tem mais de duas coisas em "Em andamento"** ao mesmo tempo. Trabalho começado e parado é o desperdício mais comum.
+- **Ideias soltas vão como rascunho** no Backlog, sem cerimônia.
+- **O Backlog é podado** a cada planejamento: o que ninguém vai fazer nos próximos três meses é fechado com um comentário.
+
+::: {.callout-tip title="Neste repositório"}
+Cada capítulo do livro é uma issue no [quadro do projeto](https://github.com/Garon-Sys/manual-saas/projects). Os campos, as views e as automações são exatamente os deste capítulo. O script [`scripts/issues-iniciais.sh`](https://github.com/Garon-Sys/manual-saas/blob/main/scripts/issues-iniciais.sh) cria as labels e as issues iniciais.
+:::
+
+::: {.callout-note title="Para praticar"}
+Pegue cinco linhas do seu `TODO.md` e reescreva cada uma no formato problema, resultado esperado e critérios de aceite. Se uma não couber, talvez ela seja uma ideia (rascunho), não uma tarefa.
+:::

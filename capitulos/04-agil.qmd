@@ -1,0 +1,72 @@
+# Ágil com iterações {#sec-agil}
+
+Times pequenos funcionam bem com iterações de duas semanas no GitHub Projects e um ritual mínimo de planejamento e revisão. O GitHub cobre o essencial do Scrum e do Kanban; o que ele não tem pronto, como burndown e velocity, não faz falta com até cinco pessoas.
+
+## Os conceitos e onde ficam
+
+| Conceito ágil | No Jira | No GitHub |
+| --- | --- | --- |
+| Backlog | Backlog | View Table ordenada por prioridade |
+| Sprint | Sprint | Campo **Iteration** (ciclos gerados automaticamente) |
+| Story points | Story points | Campo numérico "Estimativa" |
+| Épico → história → tarefa | Epic / Story / Sub-task | **Issue types** + **sub-issues** com barra de progresso |
+| Quadro do sprint | Board | View Board filtrada por `iteration:@current` |
+| Release | Fix version | **Milestones** |
+| Roadmap | Timeline | View **Roadmap** |
+| Relatórios | Burndown, velocity | **Insights** (burn-up e gráficos por campo) |
+| Automação | Automation rules | Workflows nativos + GitHub Actions |
+
+## O ciclo de uma iteração
+
+```{mermaid}
+flowchart LR
+    A["Planejamento<br/>(segunda, 30 min)"] --> B["Trabalho<br/>(duas semanas)"]
+    B --> C["Revisão<br/>(último dia, 30 min)"]
+    C --> D["Retrospectiva<br/>(uma melhoria)"]
+    D --> A
+```
+
+1. **Planejamento:** escolha o objetivo da iteração em **uma frase** ("o relatório anual exporta em PDF") e puxe do Backlog só o que cabe.
+2. **Trabalho:** o acompanhamento é assíncrono. Olhe o Board no começo do dia; com colaborador, um comentário curto na issue em andamento basta.
+3. **Revisão:** o que entrou, o que ficou e por quê.
+4. **Retrospectiva:** **uma** melhoria de processo para a próxima iteração. Uma, não dez.
+
+## Como estimar
+
+A estimativa mede **tamanho e incerteza**, não horas. Use a escala 1, 2, 3, 5, 8:
+
+| Pontos | Significa |
+| --- | --- |
+| 1 | Trivial, sei exatamente o que fazer |
+| 2–3 | Pequeno, com poucas dúvidas |
+| 5 | Médio, ou com uma incerteza real |
+| 8 | Grande demais: quebre em sub-issues antes de começar |
+
+Depois de três ou quatro iterações, a soma de pontos entregues por iteração dá uma noção de capacidade. Use como referência para planejar, nunca como meta.
+
+## Épicos
+
+Um épico é um conjunto grande de trabalho com um objetivo de negócio. No Farol: "Importação pelo agregador", "Relatório fiscal anual", "Convite de membros para um espaço". Cada épico vira uma issue do tipo Epic, com as features e tarefas como sub-issues. A barra de progresso do épico mostra quanto falta.
+
+## Kanban ou Scrum?
+
+- **Sozinho:** Kanban puro (fluxo contínuo, sem iterações) funciona bem.
+- **Com colaborador:** as iterações ajudam a combinar prioridades e ritmo.
+- **Com clientes ou investidores:** as iterações dão datas concretas para conversar.
+
+## Quando migrar para o Jira
+
+O GitHub deixa de bastar quando aparecem um ou mais destes sinais:
+
+- Time acima de cinco a oito pessoas, com vários quadros que precisam conversar.
+- Necessidade de fluxos de status com regras (por exemplo, "só QA move para Pronto").
+- Gestão pedindo relatórios ágeis prontos: burndown, velocity, cumulative flow.
+- Suporte ao cliente estruturado, com SLA (aí entra o Jira Service Management).
+
+::: {.callout-tip title="Neste repositório"}
+O livro é escrito em iterações de duas semanas. Cada iteração tem um objetivo, como "Parte I completa", visível no campo Iteration do [quadro](https://github.com/Garon-Sys/manual-saas/projects).
+:::
+
+::: {.callout-note title="Para praticar"}
+Escreva o objetivo da sua próxima iteração em uma frase de até 15 palavras. Se não couber, a iteração está tentando fazer coisas demais.
+:::

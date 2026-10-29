@@ -1,0 +1,143 @@
+# Templates {#sec-templates}
+
+Templates prontos para copiar. Todos estão sob a licença MIT ([LICENSE-CODE](https://github.com/Garon-Sys/manual-saas/blob/main/LICENSE-CODE)).
+
+## ADR
+
+Arquivo: `docs/adr/NNNN-titulo-curto.md`
+
+```markdown
+# ADR NNNN — Título curto da decisão
+
+- **Status:** Proposto | Aceito | Substituído pelo ADR 00XX
+- **Data:** AAAA-MM-DD
+
+## Contexto
+Qual problema estamos resolvendo e quais restrições existem.
+
+## Decisão
+O que foi decidido, em uma ou duas frases.
+
+## Alternativas consideradas
+- **Opção A:** por que não.
+- **Opção B:** por que não.
+
+## Consequências
+O que fica mais fácil, o que fica mais difícil, o que revisar no futuro.
+```
+
+## Runbook
+
+Arquivo: `docs/ops/nome-da-situacao.md`
+
+````markdown
+# Runbook — Nome da situação
+
+**Quando usar:** sintoma ou situação que leva a este runbook.
+**Tempo estimado:** 15 minutos.
+**Quem pode executar:** quem tem acesso X.
+
+## Pré-requisitos
+- Acesso a ...
+- Ferramenta ... instalada
+
+## Passos
+1. Comando exato:
+   ```bash
+   comando --com --parametros
+   ```
+2. Onde clicar, o que esperar ver.
+
+## Como verificar
+O que confirma que deu certo.
+
+## Como desfazer
+O que fazer se der errado no meio.
+
+## Histórico
+- AAAA-MM-DD — executado por Fulano; levou 12 minutos; ajustado o passo 2.
+````
+
+## Postmortem
+
+Arquivo: `docs/postmortems/AAAA-MM-DD-titulo.md`
+
+```markdown
+# Postmortem — Título curto do incidente
+
+- **Data:** AAAA-MM-DD
+- **Severidade:** SEV1 | SEV2
+- **Duração:** das HHhMM às HHhMM (N minutos)
+- **Autor:** nome
+
+## Resumo
+Duas ou três frases: o que aconteceu e o impacto.
+
+## Impacto
+Quem foi afetado, quanto tempo, se houve perda ou exposição de dados.
+
+## Linha do tempo
+- HHhMM — o que aconteceu ou o que foi feito.
+
+## Causa
+A falha de processo que permitiu o incidente (não "quem errou").
+
+## O que funcionou
+## O que não funcionou
+
+## Ações
+- [ ] Ação concreta que muda processo, ferramenta ou documento (#issue).
+```
+
+## Issue
+
+Os templates de issue deste repositório estão em [`.github/ISSUE_TEMPLATE/`](https://github.com/Garon-Sys/manual-saas/tree/main/.github/ISSUE_TEMPLATE), no formato de formulário (YAML). Um modelo genérico em Markdown:
+
+```markdown
+## Problema
+O que está errado ou o que falta.
+
+## Resultado esperado
+Como deveria ser.
+
+## Critérios de aceite
+- [ ] Critério verificável 1
+- [ ] Critério verificável 2
+```
+
+## Pull request
+
+O template deste repositório está em [`.github/pull_request_template.md`](https://github.com/Garon-Sys/manual-saas/blob/main/.github/pull_request_template.md). O modelo para um produto de software está no capítulo [-@sec-fluxo].
+
+## `COMO-TRABALHAMOS.md`
+
+```markdown
+# Como trabalhamos
+
+## Onde cada coisa mora
+(tabela do capítulo 2, adaptada)
+
+## O fluxo de uma tarefa
+Issue → branch `NNN-titulo` → PR com `Closes #NNN` → CI verde → review → merge → deploy.
+
+## Definição de pronto
+- Mergeado e em produção
+- Testes cobrindo o comportamento novo
+- Migração revisada
+- Documentação atualizada, se preciso
+
+## Quando escrever um ADR
+Decisão difícil de desfazer, que afeta mais de um módulo, ou que gera "por que isso é assim?".
+
+## Ritmo
+Iterações de 2 semanas. Planejamento na segunda; revisão e retrospectiva no último dia.
+
+## Segurança
+- Segredos só no gerenciador de senhas, no cofre do projeto
+- Dados reais nunca fora de produção
+- 2FA obrigatório em tudo
+
+## Números de operação
+- RPO: 24 horas
+- RTO: 4 horas
+```

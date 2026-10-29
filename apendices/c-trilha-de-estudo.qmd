@@ -1,0 +1,19 @@
+# Trilha de estudo {#sec-trilha}
+
+Estude na ordem do plano de implantação (apêndice [-@sec-plano]): cada tópico tem uma leitura curta para aplicar já e uma mais profunda para depois. As leituras são gratuitas, exceto os livros indicados em itálico.
+
+| # | Tópico | Para aplicar já | Para aprofundar |
+| --- | --- | --- | --- |
+| 1 | GitHub Projects | [GitHub Docs: Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects) | [Shape Up](https://basecamp.com/shapeup), método de ciclos para times pequenos |
+| 2 | Ágil | [Scrum Guide](https://scrumguides.org/) (cerca de 15 páginas) | *Kanban*, de David J. Anderson |
+| 3 | Fluxo de código | [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow) e [Conventional Commits](https://www.conventionalcommits.org/pt-br/) | — |
+| 4 | Arquitetura de SaaS | [The Twelve-Factor App](https://12factor.net/pt_br/) | — |
+| 5 | Entrega contínua | [DORA](https://dora.dev/) (as quatro métricas) | *Accelerate*, de Forsgren, Humble e Kim |
+| 6 | Operação e confiabilidade | [Google SRE books](https://sre.google/books/), capítulos de monitoramento e postmortem | *Site Reliability Engineering*, completo |
+| 7 | Incidentes | [Atlassian Incident Management Handbook](https://www.atlassian.com/incident-management/handbook) | — |
+| 8 | Decisões documentadas | [adr.github.io](https://adr.github.io/) | — |
+| 9 | Segurança de aplicações web | [OWASP Top 10](https://owasp.org/www-project-top-ten/) | [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/) |
+
+## Como estudar sem travar o projeto
+
+Uma leitura por iteração, ligada à fase do plano em andamento. Ao terminar, registre em uma linha no seu `COMO-TRABALHAMOS.md` o que decidiu adotar. Ler sem aplicar se perde em semanas; uma linha aplicada fica.

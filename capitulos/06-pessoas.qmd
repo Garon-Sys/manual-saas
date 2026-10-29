@@ -1,0 +1,48 @@
+# Pessoas: entrada e saída de colaboradores {#sec-pessoas}
+
+Um colaborador novo deve rodar o produto localmente e abrir o primeiro PR na primeira semana, sem depender de você para cada passo. Isso só acontece se o caminho estiver escrito, e o acesso for dado aos poucos.
+
+## O que precisa existir no repositório
+
+- **`README.md` na raiz:** o que é o projeto, como rodar localmente em até dez minutos (idealmente um `make dev` ou `docker compose up`) e onde está o resto da documentação.
+- **`CONTRIBUTING.md`:** fluxo de branch e PR, padrão de commits, como rodar os testes. Pode simplesmente apontar para o `COMO-TRABALHAMOS.md`.
+- **Dados de exemplo (seed):** um comando que popula o banco local com dados fictícios. No Farol, espaços, membros e lançamentos inventados.
+- **Issues `good first issue`:** tarefas pequenas e bem descritas para o primeiro PR.
+
+## Acessos graduais
+
+O princípio do **menor privilégio**: cada pessoa tem só o acesso que a função exige, e o acesso cresce com a necessidade.
+
+| Momento | Acesso |
+| --- | --- |
+| Dia 1 | Repositório, GitHub Projects, pasta compartilhada do Drive |
+| Primeira semana | Ambiente de staging, ferramenta de erros (ex.: Sentry) |
+| Quando a função exigir | Produção (leitura antes de escrita), provedor de nuvem, integrações |
+
+## Checklist de entrada
+
+- [ ] Conta no GitHub com 2FA ativo.
+- [ ] Convite ao repositório e ao projeto.
+- [ ] Acesso à pasta compartilhada do Drive.
+- [ ] Cofre do projeto no gerenciador de senhas (nunca o cofre pessoal de alguém).
+- [ ] Leitura do `COMO-TRABALHAMOS.md` e dos ADRs principais.
+- [ ] Ambiente local rodando com dados de seed.
+- [ ] Primeiro PR mergeado.
+
+## Checklist de saída
+
+- [ ] Remover do GitHub, do Drive, do provedor de nuvem, da ferramenta de erros e das integrações.
+- [ ] Remover do cofre do projeto no gerenciador de senhas.
+- [ ] **Rotacionar os segredos que a pessoa conhecia.**
+- [ ] Reatribuir as issues abertas.
+- [ ] Registrar a data da revogação.
+
+A saída costuma ser esquecida, e é ela que deixa portas abertas. Escreva o checklist de saída no mesmo dia em que escrever o de entrada.
+
+::: {.callout-tip title="Neste repositório"}
+O [CONTRIBUTING.md](https://github.com/Garon-Sys/manual-saas/blob/main/CONTRIBUTING.md) é o onboarding deste livro: em cinco minutos de leitura, qualquer pessoa sabe como propor uma mudança.
+:::
+
+::: {.callout-note title="Para praticar"}
+Peça a alguém de fora para seguir o seu README do zero, sem ajuda, e cronometre. Cada pergunta que a pessoa fizer é uma linha que falta no README.
+:::

@@ -1,0 +1,40 @@
+# Prefácio {.unnumbered}
+
+Este livro é sobre o que acontece em volta do código de um SaaS: como o trabalho é organizado, como uma mudança chega à produção e como o sistema é mantido no ar, seguro e evoluindo. É escrito para times pequenos, de uma a oito pessoas, que querem método sem burocracia.
+
+Quase todo bom material sobre o tema está em inglês e foi pensado para empresas grandes. Aqui a proposta é outra: **o mínimo que funciona, em português, com exemplos que você pode abrir e copiar**.
+
+## Para quem é
+
+- **Quem constrói um SaaS sozinho** e sente que a gestão está toda na cabeça.
+- **Quem vai receber o primeiro colaborador** e quer que ele entre sem depender de você para cada passo.
+- **Quem lidera um time pequeno** e quer um vocabulário comum para conversar sobre processo.
+- **Quem estuda engenharia de software** e quer ver como as práticas se conectam no dia a dia.
+
+## O caso do livro: o Farol
+
+Os exemplos usam o **Farol**, um SaaS fictício de finanças pessoais. Ele reúne contas de várias instituições, gera relatórios e ajuda o usuário a planejar. O backend é Django, o frontend é React com Vite e TypeScript, e os dados bancários chegam por um agregador. Nada disso existe: o Farol é inventado para que os exemplos sejam concretos sem expor nenhum sistema real ([ADR 0004](https://github.com/Garon-Sys/manual-saas/blob/main/adr/0004-caso-ficticio.md)).
+
+## Este repositório é o exemplo
+
+O livro usa tudo o que ensina. Ao longo dos capítulos, caixas como esta apontam para o exemplo vivo:
+
+::: {.callout-tip title="Neste repositório"}
+O livro tem um [quadro no GitHub Projects](https://github.com/Garon-Sys/manual-saas/projects), [templates de PR e de issue](https://github.com/Garon-Sys/manual-saas/tree/main/.github), um [workflow que publica o livro](https://github.com/Garon-Sys/manual-saas/actions) e [decisões registradas em ADRs](https://github.com/Garon-Sys/manual-saas/tree/main/adr).
+:::
+
+E caixas como esta propõem um exercício curto, para aplicar no seu projeto:
+
+::: {.callout-note title="Para praticar"}
+Escolha um projeto seu e anote, em uma frase, qual destas frentes mais te preocupa hoje: trabalho, código, entrega, operação, segurança, documentação ou pessoas. Comece a leitura pela parte correspondente.
+:::
+
+## Como ler
+
+A **Parte I — Gestão** trata de organizar o trabalho e o conhecimento. A **Parte II — Entrega** cobre o caminho de uma mudança até a produção. A **Parte III — Operação** é sobre manter o sistema no ar. Os **apêndices** têm templates prontos, um plano de implantação em fases, uma trilha de estudo e um glossário.
+
+Na primeira leitura, vá em ordem. Depois, use cada capítulo como consulta.
+
+## Como contribuir
+
+Discordâncias e sugestões de quem vive isso são bem-vindas. Use as Discussions para conversar, as issues para correções pontuais e os PRs para propor texto. O [guia de contribuição](https://github.com/Garon-Sys/manual-saas/blob/main/CONTRIBUTING.md) explica o fluxo, que é o mesmo descrito no capítulo 7.

@@ -1,0 +1,45 @@
+# Plano de implantação {#sec-plano}
+
+Um caminho em cinco fases para levar um projeto de "tudo na cabeça" a "pronto para receber um colaborador e clientes pagantes". Cada fase cabe em uma ou duas iterações e não depende de ferramenta paga.
+
+## Fase 0 — Imediato
+
+- [ ] Mover todos os segredos para um gerenciador de senhas, num cofre do projeto.
+- [ ] Conferir se algum segredo já foi commitado; se sim, trocá-lo.
+- [ ] Ativar 2FA, secret scanning e push protection no GitHub.
+- [ ] Tirar do repositório binários que mudam (apresentações, vídeos) e levá-los para o Drive.
+
+## Fase 1 — Organizar o trabalho
+
+- [ ] Criar o GitHub Project com Status, Prioridade, Área, Estimativa e Iteração (capítulo [-@sec-projects]).
+- [ ] Criar as labels e as views Backlog, Iteração atual e Roadmap.
+- [ ] Migrar o `TODO.md` para issues e rascunhos; arquivar o arquivo.
+- [ ] Criar os épicos atuais como issues do tipo Epic.
+- [ ] Rodar a primeira iteração com planejamento e revisão (capítulo [-@sec-agil]).
+
+## Fase 2 — Fluxo de código e CI
+
+- [ ] Escrever o `COMO-TRABALHAMOS.md` e o `README.md` da raiz (capítulo [-@sec-documentacao]).
+- [ ] Criar `.github/` com templates de PR e de issue e o `dependabot.yml`.
+- [ ] Criar a CI mínima: lint, testes e check de migrações (capítulo [-@sec-cicd]).
+- [ ] Ativar branch protection na `main` (capítulo [-@sec-fluxo]).
+- [ ] Adotar Conventional Commits e iniciar o `CHANGELOG.md`.
+
+## Fase 3 — Operação
+
+- [ ] Instalar a captura de erros no backend e no frontend (capítulo [-@sec-observabilidade]).
+- [ ] Configurar um monitor de disponibilidade externo, com alerta.
+- [ ] Definir RPO e RTO; fazer o primeiro restore de teste (capítulo [-@sec-backups]).
+- [ ] Escrever os runbooks de deploy, rollback e rotação de segredos.
+- [ ] Criar `docs/postmortems/` e o template (capítulo [-@sec-incidentes]).
+- [ ] Ter um ambiente de staging com dados fictícios.
+
+## Fase 4 — Pronto para colaborador e clientes pagantes
+
+- [ ] README com "rodar em 10 minutos" e dados de seed (capítulo [-@sec-pessoas]).
+- [ ] `CONTRIBUTING.md` e três issues `good first issue`.
+- [ ] Checklists de entrada e saída de colaboradores.
+- [ ] Log de auditoria e mascaramento de dados sensíveis (capítulo [-@sec-seguranca]).
+- [ ] Política de privacidade e de retenção de dados.
+- [ ] Deploy automatizado pela `main`, com feature flags (capítulo [-@sec-migracoes]).
+- [ ] Página de status.

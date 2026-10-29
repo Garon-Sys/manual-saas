@@ -1,0 +1,58 @@
+# Onde cada coisa mora {#sec-onde-mora}
+
+O repositório no GitHub é a fonte da verdade. Só sai dele o que é binário pesado, binário que muda muito, segredo, ou material para quem não tem acesso ao repositório.
+
+## O mapa
+
+| O quê | Onde | Por quê |
+| --- | --- | --- |
+| Código, migrações, testes | Repositório | Versionado junto com tudo |
+| Decisões (ADRs) | Repositório, em `docs/adr/` | Decisão fechada é conhecimento estável |
+| Runbooks e postmortems | Repositório, em `docs/ops/` e `docs/postmortems/` | Mudam no mesmo PR que o código |
+| Regras do time | Repositório, em `docs/COMO-TRABALHAMOS.md` | Todo mundo lê no primeiro dia |
+| Notas em formação | Repositório, numa pasta de trabalho | Até virar ADR ou issue |
+| Backlog, tarefas, bugs | GitHub Issues + Projects | Ligam tarefa ao PR que a resolve |
+| Ativos-fonte da marca (SVG, paleta) | Repositório, em `docs/visual/` | Pequenos, estáveis, textuais |
+| Diagramas técnicos | Mermaid dentro do `.md` | O GitHub renderiza; revisa-se no PR |
+| Apresentações, vídeos, fotos | Drive compartilhado | Binários que mudam incham o histórico do Git |
+| Material para investidores e clientes | Drive (PDF exportado) ou blog | Quem recebe não acessa o repositório |
+| Segredos (chaves, senhas, tokens) | Gerenciador de senhas | **Nunca** no repositório nem no Drive |
+
+## A regra dos binários
+
+O GitHub avisa quando um arquivo passa de 50 MB e recusa acima de 100 MB. Mas o critério que importa é **a frequência de mudança**, não o tamanho.
+
+O Git guarda cada versão de cada arquivo para sempre. Uma apresentação de 5 MB salva 30 vezes vira 150 MB no histórico, e esse histórico nunca encolhe: todo mundo que clonar o repositório baixa tudo.
+
+- **Binário estável** (logo final, favicon, imagem da documentação): fica no repositório.
+- **Binário que muda** (apresentação, vídeo, rascunho de design): vai para o Drive, e o `.md` correspondente leva o link.
+
+## A regra de uma casa por documento
+
+Se um assunto aparece em dois lugares, um deles é a casa e o outro tem só um resumo e um link. Documentação duplicada fica desatualizada em um dos lugares, e ninguém sabe qual vale.
+
+Exemplo no Farol: a decisão de usar um agregador bancário mora no ADR 0012. O PDF para investidores diz, em uma frase, que os dados bancários chegam por um agregador, e não repete a análise.
+
+## Decidido versus em formação
+
+Uma divisão simples evita que a pasta de documentação vire um depósito:
+
+- **`docs/`** guarda o que está **decidido**: ADRs, runbooks, regras do time, visão do produto.
+- **Uma pasta de trabalho** (no Farol, `management/notes/`) guarda o que ainda está **sendo pensado**.
+- **O GitHub Projects** guarda o que está **para fazer**.
+
+Uma nota em formação termina de um de dois jeitos: vira ADR (se for decisão) ou vira issue (se for trabalho). Depois disso, pode ser apagada.
+
+## E as pessoas que não leem o GitHub?
+
+O repositório de um produto costuma ser privado. Testadores, consultorias e investidores não vão navegar nele. Para eles, escreva um resumo em linguagem simples, exporte para PDF e guarde no Drive, ou publique no blog do produto.
+
+Se isso virar rotina semanal, com várias pessoas não técnicas editando, é o sinal para avaliar uma ferramenta como o Confluence.
+
+::: {.callout-tip title="Neste repositório"}
+Este livro segue a mesma regra: texto e diagramas no repositório, decisões em [`adr/`](https://github.com/Garon-Sys/manual-saas/tree/main/adr), segredos em lugar nenhum.
+:::
+
+::: {.callout-note title="Para praticar"}
+Rode `git rev-list --objects --all | git cat-file --batch-check='%(objectsize) %(rest)' | sort -rn | head` no seu repositório. Os maiores objetos do histórico mostram quais binários deveriam ter ido para outro lugar.
+:::

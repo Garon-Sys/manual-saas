@@ -1,0 +1,25 @@
+name: Correção ou sugestão
+description: Erro, link quebrado, trecho confuso ou sugestão pontual.
+title: "Correção: "
+labels: ["correcao"]
+body:
+  - type: input
+    id: onde
+    attributes:
+      label: Onde
+      description: Link da página ou nome do arquivo, e a seção.
+    validations:
+      required: true
+  - type: textarea
+    id: problema
+    attributes:
+      label: O que está errado ou confuso
+    validations:
+      required: true
+  - type: textarea
+    id: sugestao
+    attributes:
+      label: Sugestão
+      description: Como você escreveria. Se preferir, abra direto um PR.
+    validations:
+      required: false

@@ -1,0 +1,98 @@
+# Documentação: ADRs, runbooks e regras do time {#sec-documentacao}
+
+A documentação fica em Markdown dentro do repositório, revisada por PR como o código. Isso se chama *docs-as-code*: o texto muda no mesmo PR que a mudança que ele descreve, e por isso não envelhece sozinho num wiki esquecido.
+
+## Os tipos de documento
+
+| Tipo | Pergunta que responde | Muda com que frequência |
+| --- | --- | --- |
+| ADR | Por que decidimos assim? | Nunca: uma decisão nova cria um ADR novo |
+| Runbook | Como faço X em produção? | Sempre que o procedimento mudar |
+| Nota de módulo | Como este módulo funciona? | Junto com o código |
+| Postmortem | O que aconteceu e o que mudamos? | Escrito uma vez |
+| Regras do time | Como trabalhamos aqui? | Raramente, por decisão conjunta |
+
+## Estrutura de pastas
+
+No Farol, a documentação fica assim:
+
+```
+docs/
+  README.md              índice da documentação
+  COMO-TRABALHAMOS.md    regras do time
+  visao.md               o que o produto é e para quem
+  adr/                   decisões numeradas: 0001-..., 0002-...
+  ops/                   runbooks
+  postmortems/           um arquivo por incidente
+  visual/                ativos-fonte da marca
+management/
+  notes/                 raciocínio em formação
+```
+
+## Como a documentação nasce
+
+```{mermaid}
+flowchart TB
+    N["Nota em formação<br/>management/notes/"] --> Q{"É uma decisão<br/>ou um trabalho?"}
+    Q -- decisão --> ADR["ADR<br/>docs/adr/"]
+    Q -- trabalho --> I["Issue<br/>GitHub Projects"]
+    I --> PR["Pull request"]
+    PR --> RB["Runbook ou nota de módulo<br/>atualizados no mesmo PR"]
+```
+
+## ADR: Architecture Decision Record
+
+Um ADR é um registro curto de uma decisão: o contexto, o que foi decidido, as alternativas e as consequências. Ele responde à pergunta que todo colaborador novo faz: **"por que isso é assim?"**.
+
+**Escreva um ADR quando a decisão:**
+
+- for difícil de desfazer (escolha de banco, de provedor, de modelo de dados);
+- afetar mais de um módulo;
+- puder gerar a pergunta "por que isso é assim?" daqui a um ano.
+
+Decisões pequenas cabem num comentário na issue.
+
+**Regras:**
+
+- ADRs são **numerados em sequência** e **nunca editados** depois de aceitos.
+- Uma decisão que muda gera um ADR novo, e o antigo ganha o status "Substituído pelo ADR 00XX".
+- Um ADR cabe numa tela. Se não couber, há duas decisões ali.
+
+O template está no apêndice [-@sec-templates].
+
+## Runbook
+
+Um runbook é um passo a passo para uma situação conhecida, **escrito para alguém cansado às três da manhã**. Ele não explica teoria; ele lista comandos, onde clicar e como saber que deu certo.
+
+Os primeiros runbooks de um SaaS costumam ser:
+
+- Deploy e rollback.
+- Restaurar o banco a partir do backup.
+- Rotacionar segredos (chaves de API, senhas de banco).
+- Dar e revogar acesso de um colaborador.
+- O que fazer quando a integração principal falha (no Farol, o agregador bancário).
+
+Um runbook bom tem: **quando usar**, **pré-requisitos**, **passos numerados com o comando exato**, **como verificar** e **como desfazer**.
+
+## As regras do time: `COMO-TRABALHAMOS.md`
+
+É o documento que um colaborador lê no primeiro dia. Em uma ou duas páginas, ele responde:
+
+- **Onde cada coisa mora** (capítulo [-@sec-onde-mora]).
+- **O fluxo de uma tarefa:** issue → branch → PR → review → merge → issue fechada (capítulo [-@sec-fluxo]).
+- **A definição de pronto.**
+- **Quando escrever um ADR.**
+- **O ritmo:** duração da iteração, dia de planejamento e de revisão (capítulo [-@sec-agil]).
+- **As regras de segurança:** segredos nunca no repositório, dados reais nunca fora de produção (capítulo [-@sec-seguranca]).
+
+## Diagramas
+
+Use Mermaid dentro do próprio `.md`. O GitHub renderiza, e o diagrama é revisado no PR como texto, linha a linha. Imagens exportadas de ferramentas de desenho envelhecem sem que ninguém perceba.
+
+::: {.callout-tip title="Neste repositório"}
+As decisões do livro estão em [`adr/`](https://github.com/Garon-Sys/manual-saas/tree/main/adr), incluindo a escolha do Quarto (ADR 0001) e o uso de um caso fictício (ADR 0004). Os diagramas deste capítulo são Mermaid no próprio `.qmd`.
+:::
+
+::: {.callout-note title="Para praticar"}
+Escolha a decisão mais antiga e importante do seu projeto que nunca foi escrita. Escreva o ADR dela hoje, em no máximo 20 linhas.
+:::

@@ -1,0 +1,53 @@
+# Backups, RPO e RTO {#sec-backups}
+
+Backup que nunca foi restaurado não é backup. A rotina mínima é: backup automático diário, cópia em outro local, e um restore completo testado a cada trimestre, com o tempo anotado.
+
+## Duas perguntas antes de qualquer ferramenta
+
+- **RPO** (*Recovery Point Objective*): **quanto dado você aceita perder?** Com backup diário, o RPO é de até 24 horas.
+- **RTO** (*Recovery Time Objective*): **quanto tempo o serviço pode ficar fora?** Ex.: 4 horas.
+
+```{mermaid}
+flowchart LR
+    B["Último backup"] -- "RPO: dado que se perde" --> D["Desastre"]
+    D -- "RTO: tempo fora do ar" --> R["Serviço restaurado"]
+```
+
+Os dois números são decisões de negócio, não técnicas. Um SaaS financeiro em fase de beta pode aceitar RPO de 24 horas e RTO de 8 horas. Com clientes pagantes, os números costumam apertar, e a infraestrutura acompanha.
+
+## A regra 3-2-1
+
+- **3** cópias dos dados (a original e duas de backup);
+- em **2** tipos de armazenamento diferentes;
+- **1** delas fora do local principal (outra região ou outro provedor).
+
+## O que entra no backup
+
+No Farol:
+
+- o banco de dados (dump do PostgreSQL);
+- os arquivos enviados pelos usuários (extratos, comprovantes), no armazenamento de objetos;
+- **a chave de criptografia** dos dados, se houver, guardada **separada** dos backups. Backup cifrado sem a chave não serve para nada; backup junto com a chave não protege nada.
+
+O código e a configuração não precisam de backup: estão no Git.
+
+## O restore testado (DR drill)
+
+A cada trimestre:
+
+1. Suba um ambiente separado, sem acesso à produção.
+2. Restaure o backup mais recente seguindo **apenas o runbook**.
+3. Confira: o produto abre? Os dados batem com uma amostra conhecida?
+4. **Anote o tempo total.** Esse é o seu RTO real.
+5. Corrija o runbook com tudo o que faltou.
+6. Destrua o ambiente.
+
+O primeiro drill quase sempre revela um passo que só existia na cabeça de alguém. É para isso que ele serve.
+
+## Cuidados com dados reais
+
+O ambiente do drill contém dados reais de clientes. Trate-o como produção: acesso restrito, sem cópia para notebooks, destruído ao final, e registrado (quem, quando, por quê).
+
+::: {.callout-note title="Para praticar"}
+Escreva o RPO e o RTO do seu produto em uma linha cada, no `COMO-TRABALHAMOS.md`. Depois responda com honestidade: o seu backup atual cumpre esses números? Você já restaurou um?
+:::

@@ -1,0 +1,59 @@
+project:
+  type: book
+  output-dir: _book
+
+lang: pt-BR
+
+book:
+  title: "Manual SaaS"
+  subtitle: "Gestão e operação de software como serviço para times pequenos, com exemplos vivos no GitHub"
+  author: "Andre Rico"
+  repo-url: https://github.com/Garon-Sys/manual-saas
+  repo-branch: main
+  repo-actions: [edit, issue, source]
+  site-url: https://garon-sys.github.io/manual-saas/
+  search: true
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - part: "Parte I — Gestão"
+      chapters:
+        - capitulos/01-metodo.qmd
+        - capitulos/02-onde-mora.qmd
+        - capitulos/03-github-projects.qmd
+        - capitulos/04-agil.qmd
+        - capitulos/05-documentacao.qmd
+        - capitulos/06-pessoas.qmd
+    - part: "Parte II — Entrega"
+      chapters:
+        - capitulos/07-fluxo-de-codigo.qmd
+        - capitulos/08-ci-cd.qmd
+        - capitulos/09-migracoes-e-flags.qmd
+    - part: "Parte III — Operação"
+      chapters:
+        - capitulos/10-observabilidade.qmd
+        - capitulos/11-backups.qmd
+        - capitulos/12-incidentes.qmd
+        - capitulos/13-seguranca.qmd
+  appendices:
+    - apendices/a-templates.qmd
+    - apendices/b-plano-de-implantacao.qmd
+    - apendices/c-trilha-de-estudo.qmd
+    - apendices/d-glossario.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    link-external-newwindow: true
+  # PDF e EPUB ficam para depois (ver adr/0001-quarto.md).
+  # pdf:
+  #   documentclass: scrreprt
+  # epub: default
+
+editor: source

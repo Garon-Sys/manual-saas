@@ -1,0 +1,49 @@
+# Método antes de ferramenta {#sec-metodo}
+
+Num SaaS, você não entrega um software e vai embora: você o **mantém rodando, seguro e evoluindo** todos os dias, para clientes que confiam nele. Isso exige método em sete frentes, e a maioria dos problemas de gestão de um time pequeno é de combinado entre pessoas, não de ferramenta.
+
+## As sete frentes
+
+| Frente | Pergunta que ela responde | Capítulo |
+| --- | --- | --- |
+| Trabalho | O que fazer agora, quem faz, o que vem depois? | [-@sec-projects], [-@sec-agil] |
+| Código | Como uma mudança entra no produto sem quebrar nada? | [-@sec-fluxo] |
+| Entrega | Como o código chega à produção de forma repetível? | [-@sec-cicd], [-@sec-migracoes] |
+| Operação | Está no ar? Quando cai, como volta? | [-@sec-observabilidade], [-@sec-backups], [-@sec-incidentes] |
+| Segurança | Os dados dos clientes estão protegidos? | [-@sec-seguranca] |
+| Documentação | Alguém novo consegue entender e decidir sozinho? | [-@sec-documentacao] |
+| Pessoas | Como um colaborador entra, trabalha e sai? | [-@sec-pessoas] |
+
+## O sintoma: tudo na cabeça de uma pessoa
+
+Com uma pessoa só, essas frentes funcionam de improviso. O backlog é um `TODO.md`, o deploy é um comando que você sabe de cor, a senha do banco está num arquivo de texto e as decisões estão na memória.
+
+Isso funciona até três coisas acontecerem:
+
+1. **Entra um colaborador** e precisa perguntar tudo.
+2. **Algo quebra às três da manhã** e o passo a passo não está escrito.
+3. **Você volta a um assunto depois de seis meses** e não lembra por que decidiu daquele jeito.
+
+O trabalho deste livro é **tirar o conhecimento da cabeça e colocá-lo no repositório**, onde ele é versionado, revisado e encontrado.
+
+## Por que não começar pela ferramenta
+
+Trocar o `TODO.md` pelo Jira não resolve nada se ninguém combinou o que é uma tarefa pronta, quem prioriza e quando se planeja. A ordem que funciona é:
+
+1. **Combinar** como o trabalho é feito, em uma ou duas páginas.
+2. **Escolher a ferramenta mais simples** que suporte esse combinado.
+3. **Registrar** o combinado onde todo mundo lê.
+
+Para um time que já vive no GitHub, a ferramenta mais simples quase sempre é o próprio GitHub: Issues e Projects para o trabalho, Pull Requests para o código, Actions para a entrega e Markdown no repositório para a documentação. É a escolha deste livro.
+
+## Quando a ferramenta passa a importar
+
+Ferramentas mais pesadas, como Jira e Confluence, ganham sentido quando o time cresce além de cinco a oito pessoas, quando há pessoas não técnicas editando documentação toda semana, ou quando entra suporte ao cliente estruturado. O capítulo [-@sec-agil] detalha esse ponto de virada.
+
+::: {.callout-tip title="Neste repositório"}
+O combinado deste livro está no [CONTRIBUTING.md](https://github.com/Garon-Sys/manual-saas/blob/main/CONTRIBUTING.md). É curto de propósito.
+:::
+
+::: {.callout-note title="Para praticar"}
+Liste três coisas do seu projeto que hoje só você sabe fazer. Elas são os primeiros candidatos a virar runbook (capítulo [-@sec-documentacao]).
+:::

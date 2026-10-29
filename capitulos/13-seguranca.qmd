@@ -1,0 +1,64 @@
+# Segurança, segredos e acessos {#sec-seguranca}
+
+Num SaaS que guarda dados de clientes, segurança é parte do produto, não um extra. Os hábitos deste capítulo custam pouco num time pequeno, e são exatamente o que uma auditoria vai pedir no futuro.
+
+## Segredos
+
+Segredos são chaves de API, senhas de banco, tokens e chaves de criptografia.
+
+- **Nunca no repositório**, nem num `.env` versionado. O repositório leva só um `.env.example`, com os nomes das variáveis e valores falsos.
+- **A fonte da verdade é um gerenciador de senhas** (1Password, Bitwarden ou similar), num **cofre só do projeto**, nunca no cofre pessoal de alguém.
+- **Os ambientes recebem cópias:** o servidor recebe um `.env` gerado a partir do cofre (por exemplo, com a CLI do gerenciador), e a CI lê dos Secrets do GitHub Actions ou direto do cofre por integração oficial.
+- **Ative o secret scanning e o push protection** do GitHub. Eles bloqueiam um commit com chave exposta.
+- **Rotacione** pelo menos uma vez por ano e sempre que alguém sair do projeto (capítulo [-@sec-pessoas]).
+
+Se um segredo vazou num commit, apagar o arquivo não basta: ele continua no histórico. **Troque o segredo primeiro**; limpar o histórico é secundário.
+
+## Acessos: menor privilégio
+
+- Cada pessoa tem só o acesso que a função exige (capítulo [-@sec-pessoas]).
+- Ninguém acessa o banco de produção por rotina. Quando precisar, fica registrado.
+- **2FA obrigatório** no GitHub, no provedor de nuvem, nas integrações e no e-mail do projeto.
+- **Revise a lista de acessos a cada trimestre.** Quem não precisa mais, sai.
+
+## Dependências
+
+Ative o **Dependabot** para receber alertas de vulnerabilidade e PRs de atualização. Mantenha `pip-audit` e `npm audit` na CI (capítulo [-@sec-cicd]). Atualizar em pequenas doses, toda semana, é muito mais fácil do que um salto de dois anos.
+
+## Dados dos clientes
+
+- **Criptografia em trânsito** (HTTPS sempre) e **em repouso** (banco e backups).
+- **Log de auditoria:** quem viu ou alterou dados, quando. No Farol, por usuário e por espaço.
+- **Mascaramento** de dados sensíveis em logs e na ferramenta de erros.
+- **Política escrita de retenção e exclusão:** o que acontece com os dados quando o usuário cancela ou pede exclusão.
+- **Dados reais nunca saem de produção** (capítulo [-@sec-cicd]).
+
+## Privacidade e leis
+
+Um SaaS com usuários em mais de um país pode estar sujeito a várias leis de privacidade ao mesmo tempo, como a LGPD no Brasil e leis estaduais e setoriais nos Estados Unidos. O mínimo é uma política de privacidade clara e um canal para pedidos de acesso e exclusão de dados. Para dúvidas específicas, consulte um advogado.
+
+## Integrações financeiras
+
+Agregadores bancários e meios de pagamento costumam revisar a segurança de quem usa a API em produção. Ter os controles deste capítulo documentados facilita essa aprovação. Guarde só o mínimo necessário dos tokens e dados recebidos.
+
+## O caminho para SOC 2
+
+Clientes empresariais costumam pedir um relatório **SOC 2**, uma auditoria de controles de segurança. Não é para o primeiro ano de um produto, mas os controles exigidos são os deste livro:
+
+| Controle do SOC 2 | Onde está no livro |
+| --- | --- |
+| Mudanças só por processo revisado | PRs e branch protection (capítulo [-@sec-fluxo]) |
+| Gestão de acessos e revisões periódicas | [-@sec-pessoas] e este capítulo |
+| Resposta a incidentes | [-@sec-incidentes] |
+| Backups e recuperação testados | [-@sec-backups] |
+| Monitoramento | [-@sec-observabilidade] |
+
+Quem pratica isso desde cedo chega à auditoria com o histórico pronto: os PRs, as issues e os postmortems **são** a evidência.
+
+::: {.callout-tip title="Neste repositório"}
+O [`.gitignore`](https://github.com/Garon-Sys/manual-saas/blob/main/.gitignore) deste livro bloqueia `.env` e variantes, deixando passar só o `.env.example`. É o padrão que vale copiar.
+:::
+
+::: {.callout-note title="Para praticar"}
+Rode `git log --all -p | grep -iE "password|secret|api_key|token" | head` no seu repositório. Cada resultado suspeito é um segredo para trocar hoje.
+:::

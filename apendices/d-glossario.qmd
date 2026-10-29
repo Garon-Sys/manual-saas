@@ -1,0 +1,33 @@
+# Glossário {#sec-glossario}
+
+| Termo | Significado |
+| --- | --- |
+| ADR | *Architecture Decision Record*: registro curto de uma decisão, com contexto, alternativas e consequências |
+| Backlog | Lista priorizada do que ainda não começou |
+| Branch protection | Regras que impedem mudanças na `main` sem PR e CI verde |
+| CI/CD | Integração contínua (checar cada mudança) e entrega contínua (publicar de forma automatizada) |
+| Conventional Commits | Padrão de mensagem de commit com prefixo de tipo (`feat:`, `fix:`) |
+| Definição de pronto | Critérios que uma tarefa cumpre para ser considerada terminada |
+| Deploy | Publicar uma versão do código num ambiente |
+| Docs-as-code | Documentação versionada no repositório e revisada como código |
+| DORA | Pesquisa que definiu quatro métricas de desempenho de entrega |
+| DR drill | Ensaio de recuperação de desastre: restaurar o backup de verdade, num ambiente separado |
+| Épico | Conjunto grande de trabalho, dividido em features e tarefas |
+| Expandir → migrar → contrair | Forma de mudar o banco sem quebrar a versão anterior do código |
+| Feature flag | Chave que liga ou desliga uma funcionalidade sem novo deploy |
+| GitHub Flow | Fluxo com `main` sempre implantável e branches curtas via PR |
+| Iteração (sprint) | Ciclo fixo de trabalho; neste livro, de duas semanas |
+| Menor privilégio | Cada pessoa tem só o acesso que a função exige |
+| Observabilidade | Capacidade de entender o sistema por erros, logs e métricas |
+| Postmortem | Análise sem culpados de um incidente, com ações de melhoria |
+| Pull request (PR) | Pedido para incorporar uma branch à `main`, com descrição, CI e review |
+| Rollback | Voltar à versão anterior depois de um deploy com problema |
+| RPO | *Recovery Point Objective*: quanto dado é aceitável perder num desastre |
+| RTO | *Recovery Time Objective*: quanto tempo o serviço pode ficar fora num desastre |
+| Runbook | Passo a passo para uma situação operacional conhecida |
+| SaaS | *Software as a Service*: software usado pela internet, mantido por quem o oferece |
+| Secret scanning | Recurso do GitHub que detecta chaves e senhas em commits |
+| SEV | Nível de severidade de um incidente (SEV1 é o mais grave) |
+| SOC 2 | Auditoria de controles de segurança, comum em SaaS vendido a empresas |
+| Staging | Ambiente igual à produção, com dados fictícios, para validar antes de publicar |
+| Estimativa (story points) | Medida relativa de tamanho e incerteza de uma tarefa |

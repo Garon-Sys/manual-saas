@@ -1,0 +1,41 @@
+name: Capítulo ou seção
+description: Escrever ou reescrever um capítulo ou seção do livro.
+title: "Capítulo: "
+labels: ["capitulo"]
+body:
+  - type: input
+    id: onde
+    attributes:
+      label: Onde
+      description: Parte e capítulo, ou o arquivo.
+      placeholder: "Parte III — capitulos/12-incidentes.qmd"
+    validations:
+      required: true
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: O que o leitor deve saber fazer depois de ler
+      description: Uma ou duas frases. É o critério principal de pronto.
+      placeholder: "Classificar um incidente por severidade e escrever um postmortem sem culpados."
+    validations:
+      required: true
+  - type: textarea
+    id: conteudo
+    attributes:
+      label: Conteúdo previsto
+      description: Tópicos, diagramas e exemplos vivos do repositório.
+      placeholder: |
+        - Severidades
+        - Fluxo do incidente (Mermaid)
+        - Exemplo de postmortem do Farol
+    validations:
+      required: false
+  - type: checkboxes
+    id: pronto
+    attributes:
+      label: Definição de pronto
+      options:
+        - label: Texto revisado por outra pessoa
+        - label: Pelo menos um diagrama ou exemplo concreto
+        - label: Caixa "Para praticar" no final
+        - label: Termos novos no glossário

@@ -1,0 +1,73 @@
+# Incidentes e postmortems {#sec-incidentes}
+
+Durante um incidente, a ordem é **estabilizar, comunicar e só então investigar**. Depois, um postmortem sem culpados transforma o susto em melhorias concretas no backlog.
+
+## Severidades
+
+| Severidade | Situação | Resposta |
+| --- | --- | --- |
+| SEV1 | Fora do ar, ou dado exposto ou corrompido | Imediata; avisar os usuários |
+| SEV2 | Funcionalidade importante quebrada | No mesmo dia |
+| SEV3 | Problema menor, com contorno | Entra no backlog como P1 ou P2 |
+
+Na dúvida, classifique como mais grave. Rebaixar depois é fácil; descobrir tarde que era SEV1 não é.
+
+## O fluxo de um incidente
+
+```{mermaid}
+flowchart TD
+    A["Alerta ou relato"] --> T["Triagem: qual severidade?"]
+    T --> E["Estabilizar<br/>rollback, desligar flag, escalar recurso"]
+    E --> C["Comunicar<br/>status, usuários afetados"]
+    C --> V{"Voltou ao normal?"}
+    V -- não --> E
+    V -- sim --> I["Investigar a causa"]
+    I --> P["Postmortem"]
+    P --> B["Ações viram issues"]
+```
+
+**Estabilizar primeiro.** A pergunta não é "por que quebrou?", e sim "qual é o jeito mais rápido de voltar ao normal?". Quase sempre é um rollback ou desligar uma feature flag. A investigação vem depois, com calma.
+
+**Comunicar cedo.** Um aviso curto ("estamos cientes de lentidão na importação e trabalhando nisso") evita dezenas de mensagens e mostra controle. Atualize a cada 30 minutos em SEV1, mesmo que seja "ainda investigando".
+
+**Anotar enquanto acontece.** Um arquivo ou canal com horário e o que foi feito. Na hora do postmortem, a memória já terá reescrito a história.
+
+## Postmortem sem culpados
+
+Depois de todo SEV1 ou SEV2, escreva um postmortem em `docs/postmortems/AAAA-MM-DD-titulo.md`. A pergunta central é **"que falha no processo permitiu isso?"**, nunca "quem errou?". Se a resposta for "a pessoa X errou", a próxima pergunta é "por que o sistema deixou que um erro humano chegasse à produção?".
+
+O template completo está no apêndice [-@sec-templates].
+
+## Exemplo: o Farol fora do ar por 47 minutos
+
+Um postmortem fictício, resumido:
+
+> **Resumo:** em 3 de novembro, o Farol ficou fora do ar das 14h02 às 14h49. Nenhum dado foi perdido.
+>
+> **Impacto:** todos os usuários sem acesso por 47 minutos; 12 importações agendadas atrasaram.
+>
+> **Linha do tempo:**
+>
+> - 13h58 — deploy da versão `a3f9c2d`, com uma migração que renomeia a coluna `valor`.
+> - 14h02 — monitor externo alerta: API retornando erro 500.
+> - 14h09 — rollback do código; o erro continua, porque a coluna antiga não existe mais.
+> - 14h31 — decisão de restaurar a coluna com uma migração manual.
+> - 14h49 — serviço normalizado.
+>
+> **Causa:** a migração renomeou a coluna num único passo. O código antigo, ainda em execução durante o deploy e depois no rollback, procurava o nome antigo.
+>
+> **O que funcionou:** o alerta disparou em 4 minutos.
+>
+> **O que não funcionou:** o rollback de código não desfaz migração, e o runbook de rollback não dizia isso.
+>
+> **Ações:**
+>
+> - [ ] Adotar expandir, migrar e contrair para toda mudança de esquema (#141).
+> - [ ] Acrescentar ao template de PR o item "migração compatível com a versão anterior" (#142).
+> - [ ] Atualizar o runbook de rollback com o caso de migrações (#143).
+
+Repare que nenhuma ação é "ter mais cuidado". Ações boas mudam o processo, a ferramenta ou o documento.
+
+::: {.callout-note title="Para praticar"}
+Escolha o último problema sério que o seu produto teve, mesmo que antigo, e escreva o postmortem dele. As ações que saírem viram issues no seu quadro.
+:::

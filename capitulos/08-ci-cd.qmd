@@ -1,0 +1,118 @@
+# CI/CD e ambientes {#sec-cicd}
+
+A CI roda em cada PR e o deploy para produção sai automaticamente da `main`, sempre passando antes por staging. O objetivo é que publicar seja chato: um processo repetível, sem passos de memória.
+
+- **CI (integração contínua):** cada mudança é checada automaticamente antes de entrar.
+- **CD (entrega contínua):** o que entra na `main` chega à produção por um processo automatizado.
+
+## O pipeline
+
+```{mermaid}
+flowchart TB
+    subgraph ci["CI: em cada pull request"]
+        direction LR
+        L["Lint e tipos"] --> T["Testes"] --> MG["Check de migrações"] --> B["Build"]
+    end
+    subgraph cd["CD: após o merge"]
+        direction LR
+        S["Deploy em staging"] --> SM["Smoke tests"] --> P["Deploy em produção"]
+    end
+    ci -- "tudo verde: merge" --> cd
+    style ci fill:transparent,stroke:#adb5bd
+    style cd fill:transparent,stroke:#adb5bd
+```
+
+## O que a CI checa
+
+Exemplo para o Farol (Django no backend, React com Vite e TypeScript no frontend):
+
+| Etapa | Backend (`api/`) | Frontend (`web/`) |
+| --- | --- | --- |
+| Formatação e lint | `ruff check` e `ruff format --check` | `eslint` e `prettier --check` |
+| Tipos | `mypy` (opcional no início) | `tsc --noEmit` |
+| Testes | `python manage.py test` ou `pytest` | `vitest run` |
+| Migrações | `python manage.py makemigrations --check --dry-run` | — |
+| Build | — | `vite build` |
+| Segurança | `pip-audit` | `npm audit --omit=dev` |
+
+**Comece pequeno:** lint, testes e o check de migrações. Acrescente o resto aos poucos. Uma CI que falha por bobagem acaba ignorada na prática.
+
+Um workflow mínimo do GitHub Actions para o backend:
+
+```yaml
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt ruff
+      - run: ruff check .
+      - run: python manage.py makemigrations --check --dry-run
+      - run: python manage.py test
+```
+
+## Ambientes
+
+| Ambiente | Para que serve | Dados |
+| --- | --- | --- |
+| Local | Desenvolver | Fictícios (seed) |
+| Staging | Testar o deploy e validar antes de produção | Fictícios, nunca de clientes |
+| Produção | Clientes | Reais, acesso restrito |
+
+**Dados reais nunca saem de produção.** Nada de copiar o banco para depurar no notebook. Para reproduzir um problema, crie dados fictícios equivalentes. Num produto financeiro, essa regra não tem exceção.
+
+## Deploy e rollback
+
+- O deploy é um **workflow**, não um comando digitado à mão.
+- Toda versão em produção tem uma **tag ou um SHA** identificável.
+- O **rollback está escrito num runbook** e foi testado ao menos uma vez.
+- O deploy em produção pode exigir aprovação manual usando **Environments** do GitHub, com revisores obrigatórios.
+
+## Segredos na CI
+
+Segredos entram na CI pelos **Secrets do GitHub Actions** ou lidos de um gerenciador de senhas por uma integração oficial. Nunca escreva um segredo no YAML do workflow. Detalhes no capítulo [-@sec-seguranca].
+
+## Métricas de entrega
+
+A pesquisa DORA identificou quatro métricas que separam times de alto desempenho:
+
+| Métrica | Pergunta |
+| --- | --- |
+| Frequência de deploy | Com que frequência publicamos? |
+| Lead time de mudança | Quanto tempo do commit até a produção? |
+| Taxa de falha de mudança | Quantos deploys causam problema? |
+| Tempo de restauração | Quanto tempo para voltar ao normal depois de uma falha? |
+
+Num time pequeno, não precisa de painel: anote na revisão da iteração quantos deploys houve e quantos deram problema.
+
+::: {.callout-tip title="Neste repositório"}
+O [workflow deste livro](https://github.com/Garon-Sys/manual-saas/blob/main/.github/workflows/livro.yml) é um pipeline completo em miniatura: em cada PR, renderiza o livro e checa os links; na `main`, publica no GitHub Pages. Veja as execuções na aba [Actions](https://github.com/Garon-Sys/manual-saas/actions).
+:::
+
+::: {.callout-note title="Para praticar"}
+Crie a CI mínima do seu projeto com uma única etapa: os testes. Faça um PR com um teste quebrado de propósito e veja a CI barrar o merge.
+:::

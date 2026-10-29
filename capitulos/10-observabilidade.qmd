@@ -1,0 +1,66 @@
+# Observabilidade e alertas {#sec-observabilidade}
+
+Operar é saber antes do cliente que algo quebrou. Para um time pequeno, três coisas cobrem a maior parte: captura de erros, monitor de disponibilidade e alertas que só disparam quando exigem ação.
+
+## As quatro camadas
+
+| Camada | Responde | Ferramenta típica |
+| --- | --- | --- |
+| Erros | Que exceção aconteceu, para quem, em qual versão? | Sentry, no backend e no frontend |
+| Disponibilidade | O site e a API estão respondendo? | Uptime monitor externo |
+| Logs | O que o sistema fez, passo a passo? | Logs estruturados em JSON |
+| Métricas | Quanto, quão rápido, quão frequente? | Do provedor; depois algo como Prometheus e Grafana |
+
+Comece pelas duas primeiras. Elas custam uma tarde e pegam a maior parte dos problemas.
+
+## Captura de erros
+
+Uma ferramenta como o Sentry agrupa exceções iguais, mostra quantos usuários foram afetados, a versão do código e o caminho até o erro. Configure-a no backend **e** no frontend: muitos erros de um SaaS acontecem no navegador e nunca chegam ao servidor.
+
+Dois cuidados:
+
+- **Marque cada evento com a versão** (o SHA do commit). Assim, você vê se um erro começou com um deploy específico.
+- **Mascare dados sensíveis** antes de enviar: números de conta, documentos, valores (capítulo [-@sec-seguranca]).
+
+## Disponibilidade
+
+Um monitor externo acessa o produto a cada minuto, de fora da sua infraestrutura. Monitore:
+
+- a página inicial do produto;
+- um endpoint de saúde da API (`/health`), que confere o banco e as dependências críticas;
+- o certificado TLS (avisa antes de expirar).
+
+O monitor tem que ser **externo**. Um script de saúde rodando no mesmo servidor não percebe quando o servidor inteiro cai.
+
+## Logs estruturados
+
+Log em JSON, uma linha por evento, com campos fixos: horário, nível, mensagem, `request_id`, `user_id` (ou um identificador pseudônimo) e versão. Com isso, dá para seguir uma requisição de ponta a ponta e filtrar por usuário.
+
+```json
+{"ts": "2026-11-03T14:02:11Z", "level": "error", "msg": "importacao falhou",
+ "request_id": "a91f", "espaco_id": 482, "instituicao": "banco-x", "versao": "a3f9c2d"}
+```
+
+## Alertas
+
+**Só alerte o que exige ação.** Um alerta que dispara toda semana sem motivo ensina o time a ignorar alertas, e no dia em que importar, ninguém olha.
+
+Alertas iniciais do Farol:
+
+| Alerta | Condição | Severidade |
+| --- | --- | --- |
+| Produto fora do ar | Monitor externo falha por 2 minutos | SEV1 |
+| Taxa de erro alta | Erros por minuto acima de 3× o normal | SEV2 |
+| Importação parada | Nenhuma importação concluída em 6 horas | SEV2 |
+| Backup não rodou | Último backup com mais de 26 horas | SEV2 |
+| Certificado expirando | Menos de 14 dias | SEV3 |
+
+As severidades estão definidas no capítulo [-@sec-incidentes].
+
+## Página de status
+
+Quando houver clientes pagantes, uma página pública com o estado do serviço evita uma enxurrada de e-mails durante incidentes, e mostra transparência. Vários monitores externos oferecem a página junto.
+
+::: {.callout-note title="Para praticar"}
+Desligue de propósito o banco do seu ambiente de staging. Quanto tempo leva até alguém, ou algum alerta, perceber? Esse tempo é o seu ponto de partida.
+:::

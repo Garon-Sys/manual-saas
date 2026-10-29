@@ -1,0 +1,74 @@
+# Migrações seguras e feature flags {#sec-migracoes}
+
+Durante um deploy, a versão nova e a antiga do código convivem por alguns minutos, e o banco precisa servir às duas. Renomear ou apagar uma coluna num único passo é a causa mais comum de queda em deploy. A técnica que evita isso se chama **expandir → migrar → contrair**.
+
+## Expandir, migrar, contrair
+
+Exemplo no Farol: renomear a coluna `valor` para `valor_centavos`, mudando de decimal para inteiro.
+
+```{mermaid}
+sequenceDiagram
+    participant DB as Banco
+    participant V1 as Código v1
+    participant V2 as Código v2
+    Note over DB,V2: Deploy 1: expandir
+    DB->>DB: adiciona valor_centavos (nula)
+    V2->>DB: escreve nas duas colunas
+    V1->>DB: continua lendo valor
+    Note over DB,V2: Migrar
+    DB->>DB: script copia valor para valor_centavos
+    V2->>DB: passa a ler valor_centavos
+    Note over DB,V2: Deploy 2: contrair (dias depois)
+    DB->>DB: remove valor
+```
+
+1. **Expandir:** adicione o que é novo (coluna, tabela, índice) sem remover nada. O código antigo continua funcionando.
+2. **Migrar:** o código novo escreve no formato novo (e no antigo, se necessário). Um script copia os dados existentes.
+3. **Contrair:** num deploy **posterior**, quando nada mais lê o formato antigo, remova-o.
+
+## Regras práticas para migrações no Django
+
+- **Uma migração por PR**, revisada com atenção no review.
+- **Adicionar coluna:** sempre nula ou com default. Coluna obrigatória sem default trava o deploy.
+- **Remover coluna:** primeiro o código para de usar, num deploy; depois a migração remove, no deploy seguinte.
+- **Renomear:** nunca direto. Use expandir, migrar e contrair.
+- **Migração de dados grande:** num comando separado (`manage.py`), em lotes, fora da migração de esquema.
+- **Índice em tabela grande:** no PostgreSQL, crie com `CONCURRENTLY` (no Django, `AddIndexConcurrently`) para não travar a tabela.
+- **Teste a migração** num banco de staging com volume parecido com o de produção.
+
+## Feature flags
+
+Uma feature flag é uma chave que liga ou desliga uma funcionalidade **sem um novo deploy**. Ela separa duas coisas que costumam vir juntas: **publicar o código** e **liberar a funcionalidade**.
+
+Usos comuns:
+
+- **Liberar só para testadores** antes de liberar para todos.
+- **Desligar rápido** o que deu problema, sem rollback.
+- **Mergear trabalho inacabado** na `main`, desligado, em vez de manter uma branch longa.
+
+No início, não precisa de serviço externo. No Farol, uma tabela simples basta:
+
+```python
+# flags/models.py
+from django.db import models
+
+class Flag(models.Model):
+    nome = models.SlugField(unique=True)
+    ativa_para_todos = models.BooleanField(default=False)
+    usuarios = models.ManyToManyField("auth.User", blank=True)
+
+    def ativa_para(self, usuario) -> bool:
+        return self.ativa_para_todos or self.usuarios.filter(pk=usuario.pk).exists()
+```
+
+```python
+# no código
+if Flag.objects.get(nome="exportar-pdf").ativa_para(request.user):
+    ...
+```
+
+**O cuidado com flags:** cada uma é uma dívida. Quando a funcionalidade estiver liberada para todos e estável, abra uma issue para remover a flag e o código antigo.
+
+::: {.callout-note title="Para praticar"}
+Procure no histórico do seu projeto uma migração que renomeou ou removeu uma coluna em um só passo. Reescreva-a, no papel, nos três passos de expandir, migrar e contrair.
+:::
